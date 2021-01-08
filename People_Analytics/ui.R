@@ -63,6 +63,14 @@ ui <- dashboardPage(
                     selectInput(inputId = 'Gender', label = 'Sex',
                                 choices = unique(df$Gender),
                                 selected = 1)),
+                box(width = 2,
+                    status = 'primary', soliHeader = TRUE,
+                    selectInput(inputId = 'Category', label = 'categoria',
+                                choices = c("Attrition","BusinessTravel",
+                                            "Department","Education",
+                                            "JobRole","Employee Source"),
+                                selected = 1)),
+
                 valueBoxOutput(width = 3, outputId = "box1"),
                 valueBoxOutput(width = 3, outputId = "box2"),
                 valueBoxOutput(width = 3, outputId = "box3")
@@ -77,22 +85,14 @@ ui <- dashboardPage(
                   title = "Density", status = "primary", solidHeader = TRUE,
                   plotlyOutput(outputId = 'grafic_p1_c2_l1')),
                 
-                
-                fluidRow(
-                  
-                  box(width = 4,
-                      status = 'primary', soliHeader = TRUE,
-                      selectInput(inputId = 'name_x', label = 'Axis X',
-                                  choices = c('MonthlyIncome','PercentSalaryHike'),
-                                  selected = 1))
-                ),
-                
-                
-                
                 box(
                   title = "Bar Grap", status = "primary", solidHeader = TRUE,
-                  width = 12,
+                  width = 5,
                   plotlyOutput(outputId = 'grafic_p1_c1_l2')),
+                
+                box(width = 7, 
+                    title = "Sector chart", status = "primary", solidHeader = TRUE,
+                    plotlyOutput(outputId = "gauge")),
               )
               
               

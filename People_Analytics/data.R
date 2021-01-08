@@ -4,52 +4,27 @@ library(ggplot2)
 
 df <- read_csv('dados/dataset.csv')
 
-# Transforming categorical variable to the factor type
 
-# Function
 
-to.factor <- function(df, variables) {
+###############################################################
+# List of variables
+
+factor.vars <- c("Attrition","BusinessTravel","Department","Education","JobRole","Employee Source")
+
+###############################################################
+
+# Function to convert variable to factor
+
+to.factor <- function(df, variables){
   for (variable in variables){
     df[[variable]] <- as.factor(paste(df[[variable]]))
   }
   return(df)
 }
-
-
-factor.vars <- c("Attrition",               
-                 "BusinessTravel",  
-                 'Employee Source',
-                 "Department",              
-                 "Education",               
-                 "EducationField",          
-                 "EnvironmentSatisfaction" ,
-                 "Gender"   ,               
-                 "JobInvolvement" ,         
-                 "JobLevel"  ,              
-                 "JobRole"  ,               
-                 "JobSatisfaction"    ,     
-                  "MaritalStatus"      ,     
-                  "OverTime"            ,    
-                  "PercentSalaryHike"    ,   
-                  "RelationshipSatisfaction",
-                  "StockOptionLevel"      ,  
-                  "WorkLifeBalance")
 
 df <- to.factor(df = df, variables = factor.vars)
 
-# Transforming categorical variable to the integer type
-
-# Function
-
-to.integer <- function(df, variables) {
-  for (variable in variables){
-    df[[variable]] <- as.factor(paste(df[[variable]]))
-  }
-  return(df)
-}
-
-
-
+###############################################################
 
 ##### Atribute Engineering ##### 
 
@@ -66,6 +41,7 @@ df$PriorYearsOfExperience <- df$TotalWorkingYears - df$YearsAtCompany
 # dos funcionários em empresas anteriores.
 df$AverageTenure <- df$PriorYearsOfExperience / df$NumCompaniesWorked
 
+df$AverageTenure[!is.finite(df$AverageTenure)] <- 0
 
 
 
@@ -77,6 +53,12 @@ plot.histogram <- function(df, var, xlab, ylab) {
     theme_classic()
   return(out)
 }
+
+
+    
+    
+    
+
 
 
 
