@@ -2,8 +2,26 @@ library(tidyverse)
 library(ggplot2)
 
 
-df <- read_csv('dados/dataset.csv')
+df <- read_csv('dataset.csv')
 
+
+Attrition <- data.frame(categoria = c(levels(as.factor(df$Attrition))),
+                        perct = as.vector(table(df$Attrition)))
+
+BusinessTravel <- data.frame(categoria = c(levels(as.factor(df$BusinessTravel))),
+                             perct = as.vector(table(df$BusinessTravel)))
+
+Department <-data.frame(categoria = c(levels(as.factor(df$Department))),
+                        perct = as.vector(table(df$Department)))
+
+Education <-data.frame(categoria = c(levels(as.factor(df$Education))),
+                        perct = as.vector(table(df$Education)))
+
+JobRole <-data.frame(categoria = c(levels(as.factor(df$JobRole))),
+                        perct = as.vector(table(df$JobRole)))
+
+Employee_Source <-data.frame(categoria = c(levels(as.factor(df$'Employee Source'))),
+                        perct = as.vector(table(df$'Employee Source')))
 
 
 ###############################################################
@@ -47,10 +65,10 @@ df$AverageTenure[!is.finite(df$AverageTenure)] <- 0
 
 plot.histogram <- function(df, var, xlab, ylab) {
   out <- ggplot(df, aes_string(x = var)) +
-    geom_histogram(bins = 15, fill = "blue",  color = 'black', alpha = 0.3) +
+    geom_histogram(bins = 15, fill = "blue",  color = 'black', alpha=.4) +
     scale_y_continuous(limits = c(0, 2000)) +
-    labs (x = xlab, y = 'Count') +
-    theme_classic()
+    labs (x = xlab, y = 'Count') 
+    # + theme_classic()
   return(out)
 }
 

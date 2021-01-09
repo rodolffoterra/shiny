@@ -12,23 +12,28 @@
 # Load Package
 
 source("data.R")
+library(shiny)
 library(shinydashboard)
 library(ggplot2)
 library(plotly)
+library(shinythemes)
+library(semantic.dashboard)
 
 
 ####################
 
 # ui
 
+
+
 ui <- dashboardPage(
-  
-  
-  # Head Dashboar
+
+    # Head Dashboar
   ##############################
   dashboardHeader(
-    title = "People Analytics"
-    
+    #title = "People Analytics"
+    color = "red", title = "People Analytics", inverted = TRUE,
+
     #End of the dashboardHeader
   ),
   ##############################
@@ -38,10 +43,14 @@ ui <- dashboardPage(
   
   ##############################
   dashboardSidebar(
+    size = "thin", color = "teal",
+    
     sidebarMenu(
-      menuItem("Sex Analysis in the Company", tabName = 'sex',icon = icon("venus-mars")),
-      menuItem("Processo de Contratação", tabName = 'hiring_Process', icon = icon("user-tie")),
-      menuItem('Salários', tabName = 'salary',  icon = icon('search-dollar'))
+      tags$h2("People Analytics", style="text-align: center;"),
+      menuItem("Gender Analysis", tabName = 'sex',icon = icon("table")),
+      menuItem("Processo de Contratação", tabName = 'hiring_Process', icon = icon("computer")),
+      menuItem('Salary', tabName = 'salary',  icon = icon('money'))
+
                )
     #End of the dashboardSidebar
     ),
@@ -51,18 +60,23 @@ ui <- dashboardPage(
   # Right Dashboar
   
   dashboardBody(
+    
     tabItems(
+      #tags$h1("Public Data Set provided bi IBM", style="text-align: center;"),
       
       # Page 1
       tabItem(tabName = 'sex', 
               
               fluidRow(
                 
-                box(width = 2,
+                box(width = 4,
+                    title = "Category", 
+                    color = "red", ribbon = TRUE, title_side = "top right",
                     status = 'primary', soliHeader = TRUE,
                     selectInput(inputId = 'Gender', label = 'Sex',
                                 choices = unique(df$Gender),
                                 selected = 1)),
+                
                 box(width = 2,
                     status = 'primary', soliHeader = TRUE,
                     selectInput(inputId = 'Category', label = 'categoria',
@@ -70,28 +84,42 @@ ui <- dashboardPage(
                                             "Department","Education",
                                             "JobRole","Employee Source"),
                                 selected = 1)),
-
-                valueBoxOutput(width = 3, outputId = "box1"),
-                valueBoxOutput(width = 3, outputId = "box2"),
-                valueBoxOutput(width = 3, outputId = "box3")
+                
+                valueBox(
+                  icon = icon("male"),
+                  value = tags$p("Male", style = "font-size: 50%;"),
+                  subtitle = tags$p("60.08%", style = "font-size: 70;"),
+                  ),
+                valueBox(
+                  value = tags$p("Female", style = "font-size: 50%;"),
+                  subtitle = tags$p("39.92%", style = "font-size: 70;"),
+                  icon = icon("female"))
               ),
               
               fluidRow(
                 box(
-                  title = "Histogram", status = "primary", solidHeader = TRUE,
+                  title = "Graph 1", 
+                  color = "green", ribbon = TRUE, title_side = "top right",
+                  status = "primary", solidHeader = TRUE,
                   plotlyOutput(outputId = 'grafic_p1_c1_l1')),
                 
                 box(
-                  title = "Density", status = "primary", solidHeader = TRUE,
+                  title = "Graph 2", 
+                  color = "green", ribbon = TRUE, title_side = "top right",
+                  status = "primary", solidHeader = TRUE,
                   plotlyOutput(outputId = 'grafic_p1_c2_l1')),
                 
                 box(
-                  title = "Bar Grap", status = "primary", solidHeader = TRUE,
+                  title = "Graph 3", 
+                  color = "green", ribbon = TRUE, title_side = "top right",
+                  status = "primary", solidHeader = TRUE,
                   width = 5,
                   plotlyOutput(outputId = 'grafic_p1_c1_l2')),
                 
-                box(width = 7, 
-                    title = "Sector chart", status = "primary", solidHeader = TRUE,
+                box(width = 11, 
+                    title = "Graph 4", 
+                    color = "green", ribbon = TRUE, title_side = "top right",
+                    status = "primary", solidHeader = TRUE,
                     plotlyOutput(outputId = "gauge")),
               )
               
