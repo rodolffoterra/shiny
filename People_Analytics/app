@@ -1,0 +1,254 @@
+  # ui.R
+
+####################
+#    Project       #
+
+#    People        #
+
+#   Analytics      #
+####################
+
+####################
+# Load Package
+
+source("data.R")
+library(shiny)
+library(shinydashboard)
+library(ggplot2)
+library(plotly)
+library(shinythemes)
+library(semantic.dashboard)
+
+
+####################
+
+# ui
+
+
+
+ui <- dashboardPage(
+
+    # Head Dashboar
+  ##############################
+  dashboardHeader(
+    #title = "People Analytics"
+    color = "red", title = "People Analytics", inverted = TRUE,
+
+    #End of the dashboardHeader
+  ),
+  ##############################
+  
+  
+  # Left Dashboar
+  
+  ##############################
+  dashboardSidebar(
+    size = "thin", color = "teal",
+    
+    sidebarMenu(
+      tags$h2("People Analytics", style="text-align: center;"),
+      menuItem("Gender Analysis", tabName = 'sex',icon = icon("table")),
+      menuItem("Processo de Contratação", tabName = 'hiring_Process', icon = icon("computer")),
+      menuItem('Salary', tabName = 'salary',  icon = icon('money'))
+
+               )
+    #End of the dashboardSidebar
+    ),
+    ##############################
+  
+  
+  # Right Dashboar
+  
+  dashboardBody(
+    
+    tabItems(
+      #tags$h1("Public Data Set provided bi IBM", style="text-align: center;"),
+      
+      # Page 1
+      tabItem(tabName = 'sex', 
+              
+              fluidRow(
+                
+                box(width = 4,
+                    title = "Category", 
+                    color = "red", ribbon = TRUE, title_side = "top right",
+                    status = 'primary', soliHeader = TRUE,
+                    selectInput(inputId = 'Gender', label = 'Sex',
+                                choices = unique(df$Gender),
+                                selected = 1)),
+                
+                valueBox(
+                  icon = icon("male"),
+                  value = tags$p("Male", style = "font-size: 50%;"),
+                  subtitle = tags$p("60.08%", style = "font-size: 70;"),
+                  ),
+                valueBox(
+                  value = tags$p("Female", style = "font-size: 50%;"),
+                  subtitle = tags$p("39.92%", style = "font-size: 70;"),
+                  icon = icon("female"))
+              ),
+              
+              fluidRow(
+                box(
+                  title = "Graph 1", 
+                  color = "green", ribbon = TRUE, title_side = "top right",
+                  status = "primary", solidHeader = TRUE,
+                  plotlyOutput(outputId = 'grafic_p1_c1_l1')),
+                
+                box(
+                  title = "Graph 2", 
+                  color = "green", ribbon = TRUE, title_side = "top right",
+                  status = "primary", solidHeader = TRUE,
+                  plotlyOutput(outputId = 'grafic_p1_c2_l1')),
+                
+                box(
+                  title = "Graph 3", 
+                  color = "green", ribbon = TRUE, title_side = "top right",
+                  status = "primary", solidHeader = TRUE,
+                  width = 5,
+                  plotlyOutput(outputId = 'grafic_p1_c1_l2')),
+                
+                box(width = 11, 
+                    title = "Graph 4", 
+                    color = "green", ribbon = TRUE, title_side = "top right",
+                    status = "primary", solidHeader = TRUE,
+                    plotlyOutput(outputId = "gauge")),
+              )
+              
+              
+              
+              ),
+    
+      
+     
+       # Page 2
+      tabItem(tabName = 'hiring_Process', "Under Construction - Page 2"),
+      
+      
+      
+      # Page 3
+      tabItem(tabName = 'salary', "Under Construction - Page 3")
+      )
+    
+   
+    #End of the dashboardBody
+  )
+  ############################## 
+  
+  
+  
+  
+  
+  
+#End of the dashboardPage
+)
+####################
+
+
+
+# Serve.R
+
+####################
+#    Project       #
+
+#    People        #
+
+#   Analytics      #
+####################
+
+####################
+# Load Package
+
+source("data.R")
+library(shiny)
+library(ggplot2)
+library(plotly)
+library(googleVis)
+
+
+
+####################
+
+# Server
+
+server <- function(input, output) {
+  
+  output$box1 <- renderValueBox({
+    valueBox(
+      
+      paste(round(length(which(df$Gender == input$Gender)) / nrow(df) * 100, digits = 2),"%"),
+      paste("Number of Sex workers:",input$Gender), 
+      icon = icon("venus-mars"),
+      color = "teal"
+    )
+    
+  })
+  
+
+    output$grafic_p1_c1_l1 <- renderPlotly ({
+    
+    data <- df[df$Gender == input$Gender, ]
+    plot <- plot.histogram(data, "Age", "Age")
+    
+    if (input$Gender =="Female")
+      plot <- plot +
+      geom_histogram( bins = 15, fill = "red",  color = 'black', alpha=.4)
+    ggplotly(plot)
+    
+    
+  })
+  
+  
+  output$grafic_p1_c2_l1 <- renderPlotly ({
+    
+    dens <- ggplot(df, aes(x=Age, color=Gender, fill=Gender)) + 
+      geom_histogram(aes(y=..density..), alpha=0.5, 
+                     position="identity")+
+      geom_density(show.legend = FALSE, alpha=.4) 
+      # + theme_classic()
+    ggplotly(dens)
+    
+    
+  })
+  
+  
+  output$grafic_p1_c1_l2 <- renderPlotly ({
+  
+    box_salary <- ggplot(data = subset(df, !is.na(Gender)), aes(Gender, MonthlyIncome) ) +
+      geom_boxplot(alpha=.4, fill = c('pink', 'lightblue')) + 
+      labs(x = "Gender", y = "Monthly Income", 
+           title = "Monthly Salary \nBetween Genders") +
+      scale_fill_hue(c=45, l=80) 
+      # + theme_classic()
+    ggplotly(box_salary)
+  
+  
+  })
+  
+  
+  output$gauge <- renderPlotly({
+    
+    data <- df[df$Gender == input$Gender, ]
+   
+      c <- data.frame(categoria = c(levels((data$JobRole))),
+                      perct = as.vector(table(data$JobRole)))
+    
+    
+    fig <- plot_ly() 
+    
+    fig <- fig %>% add_pie(hole = 0.6, data = c, labels = c$categoria, values = c$perct)
+    
+    fig <- fig %>% layout(title = paste("Sex:",input$Gender,"   Category: Job Role"), showlegend = F,
+                          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+    
+    fig
+    
+    
+  })
+ 
+
+}
+
+
+
+
