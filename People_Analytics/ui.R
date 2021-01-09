@@ -27,13 +27,13 @@ library(semantic.dashboard)
 
 
 ui <- dashboardPage(
-
-    # Head Dashboar
+  
+  # Head Dashboar
   ##############################
   dashboardHeader(
     #title = "People Analytics"
     color = "red", title = "People Analytics", inverted = TRUE,
-
+    
     #End of the dashboardHeader
   ),
   ##############################
@@ -50,11 +50,11 @@ ui <- dashboardPage(
       menuItem("Gender Analysis", tabName = 'sex',icon = icon("table")),
       menuItem("Processo de Contratação", tabName = 'hiring_Process', icon = icon("computer")),
       menuItem('Salary', tabName = 'salary',  icon = icon('money'))
-
-               )
+      
+    )
     #End of the dashboardSidebar
-    ),
-    ##############################
+  ),
+  ##############################
   
   
   # Right Dashboar
@@ -70,30 +70,34 @@ ui <- dashboardPage(
               fluidRow(
                 
                 box(width = 4,
-                    title = "Category", 
+                    title = "For Graph. 1", 
                     color = "red", ribbon = TRUE, title_side = "top right",
                     status = 'primary', soliHeader = TRUE,
                     selectInput(inputId = 'Gender', label = 'Sex',
                                 choices = unique(df$Gender),
                                 selected = 1)),
                 
-                box(width = 2,
+               valueBox(width = 4,
+                  icon = icon("male"),
+                  value = tags$p("Male", style = "font-size: 50%;"),
+                  subtitle = tags$p("60.08%", style = "font-size: 70;"),
+                ),
+                
+                valueBox(width = 4,
+                  value = tags$p("Female", style = "font-size: 50%;"),
+                  subtitle = tags$p("39.92%", style = "font-size: 70;"),
+                  icon = icon("female")),
+                
+                
+                box(width = 4,
+                    title = "For Graph. 4", 
+                    color = "red", ribbon = TRUE, title_side = "top right",
                     status = 'primary', soliHeader = TRUE,
                     selectInput(inputId = 'Category', label = 'categoria',
                                 choices = c("Attrition","BusinessTravel",
                                             "Department","Education",
                                             "JobRole","Employee Source"),
-                                selected = 1)),
-                
-                valueBox(
-                  icon = icon("male"),
-                  value = tags$p("Male", style = "font-size: 50%;"),
-                  subtitle = tags$p("60.08%", style = "font-size: 70;"),
-                  ),
-                valueBox(
-                  value = tags$p("Female", style = "font-size: 50%;"),
-                  subtitle = tags$p("39.92%", style = "font-size: 70;"),
-                  icon = icon("female"))
+                                selected = 1))
               ),
               
               fluidRow(
@@ -125,20 +129,20 @@ ui <- dashboardPage(
               
               
               
-              ),
-    
+      ),
       
-     
-       # Page 2
+      
+      
+      # Page 2
       tabItem(tabName = 'hiring_Process', "Under Construction - Page 2"),
       
       
       
       # Page 3
       tabItem(tabName = 'salary', "Under Construction - Page 3")
-      )
+    )
     
-   
+    
     #End of the dashboardBody
   )
   ############################## 
@@ -148,7 +152,7 @@ ui <- dashboardPage(
   
   
   
-#End of the dashboardPage
+  #End of the dashboardPage
 )
 ####################
 
